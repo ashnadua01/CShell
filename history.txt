@@ -1,0 +1,20 @@
+exit
+mkdir temp
+ls cd.c temp pinfo.c
+ls cd.c
+ls temp
+ls pinfo.c
+exit
+ls cd.c temp pinfo.c
+exit
+ls cd.c temp pinfo.c
+exit
+sleep 5 & echo hi
+sleep 5
+exit
+clear
+cd lala
+sleep 5
+clear
+sleep 5& echo helllllll     lafnjaef   fqa
+exit
