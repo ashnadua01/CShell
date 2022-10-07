@@ -1,6 +1,6 @@
 #ifndef _PINFO
 #define _PINFO
 
-void pinfo(char* tkn);
+void pinfo(int sendCount);
 
 #endif

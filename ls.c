@@ -1,6 +1,7 @@
 #include "globalVariables.h"
 
 int prFlag = 0;
+char *lsArray[PATH_MAX];
 
 // checking if file
 int ifFile(char* name){
@@ -676,54 +677,51 @@ int checkFileExists(char path[PATH_MAX], char file[PATH_MAX]){
 }
 
 // main ls function
-void ls(char* tkn){
+void ls(int sendCount){
     int flagL = 0;
     int flagA = 0;
     int count = 0;
     // tokenizing
-    tkn = strtok(NULL, " ");
-    if(tkn == NULL){
+    if(sendCount == 1){
         // calling ls
         char dir[PATH_MAX];
         getcwd(dir, sizeof(dir));
         lsHidden(dir);
     }
     else{
-        while(tkn != NULL){
-            // reading for flags
-            if(strcmp(tkn, "-l") == 0){
+        for(int i=1; i<sendCount; i++){
+            if(strcmp(array[i], "-l") == 0){
                 flagL = 1;
             }
-            else if(strcmp(tkn, "-a") == 0){
+            else if(strcmp(array[i], "-a") == 0){
                 flagA = 1;
             }
-            else if(strcmp(tkn, "-al") == 0){
+            else if(strcmp(array[i], "-al") == 0){
                 flagA = 1;
                 flagL = 1;
             }
-            else if(strcmp(tkn, "-la") == 0){
+            else if(strcmp(array[i], "-la") == 0){
                 flagA = 1;
                 flagL = 1;
             }
             // reading directory / file names
             else{
-                array[count++] = tkn;
+                lsArray[count++] = array[i];
             }
-            tkn = strtok(NULL, " ");
         }
         // calling of ls
         if(flagA == 0 && flagL == 0){
             int flag1 = 0;
             if(count == 1){
                 // checking if directory is .
-                if(strcmp(array[0], ".") == 0){
+                if(strcmp(lsArray[0], ".") == 0){
                     char send[PATH_MAX];
                     getcwd(send, sizeof(send));
                     lsHidden(send);
                     flag1 = 1;
                 }
                 // checking if directory is ..
-                if(strcmp(array[0], "..") == 0){
+                if(strcmp(lsArray[0], "..") == 0){
                     char dir[PATH_MAX];
                     getcwd(dir, sizeof(dir));
                     chdir("..");
@@ -734,7 +732,7 @@ void ls(char* tkn){
                     flag1 = 1;
                 }
                 // checking if directory is ~
-                if(strcmp(array[0], "~") == 0){
+                if(strcmp(lsArray[0], "~") == 0){
                     char dir[PATH_MAX];
                     getcwd(dir, sizeof(dir));
                     chdir(invokedDirectory);
@@ -745,18 +743,18 @@ void ls(char* tkn){
                     flag1 = 1;
                 }
                 // checking if file
-                if(ifFile(array[0]) == 1){
+                if(ifFile(lsArray[0]) == 1){
                     char current[PATH_MAX];
                     getcwd(current, sizeof(current));
-                    int ch = checkFileExists(current, array[0]);
+                    int ch = checkFileExists(current, lsArray[0]);
                     if(ch == 0){
-                        int per = chdir(array[0]);
+                        int per = chdir(lsArray[0]);
                         if(per == -1){
                             perror("Directory/File Error");
                         }
                     }
                     else{
-                        printf("%s\n", array[0]);
+                        printf("%s\n", lsArray[0]);
                     }
                     flag1 = 1;
                 }
@@ -765,20 +763,20 @@ void ls(char* tkn){
                 int entFlag = 0;
                 for(int i=0; i<count; i++){
                     // checking if file
-                    if(ifFile(array[i]) == 1){
+                    if(ifFile(lsArray[i]) == 1){
                         entFlag = 1;
                         char current[PATH_MAX];
                         getcwd(current, sizeof(current));
-                        int ch = checkFileExists(current, array[i]);
+                        int ch = checkFileExists(current, lsArray[i]);
                         if(ch == 0){
-                            int per = chdir(array[0]);
+                            int per = chdir(lsArray[i]);
                             if(per == -1){
                                 perror("Directory/File Error");
                                 continue;
                             }
                         }
                         else{
-                            printf("%s\n", array[i]);
+                            printf("%s\n", lsArray[i]);
                             continue;
                         }
                     }
@@ -787,11 +785,11 @@ void ls(char* tkn){
                             printf("\n");
                             entFlag = 0;
                         }
-                        printf("\033[0;37m%s:\n", array[i]);
+                        printf("\033[0;37m%s:\n", lsArray[i]);
                     }
                     char dir[PATH_MAX];
                     getcwd(dir, sizeof(dir));
-                    int per = chdir(array[i]);
+                    int per = chdir(lsArray[i]);
                     // error handling
                     if(per == -1){
                         perror("Directory/File Error");
@@ -818,14 +816,14 @@ void ls(char* tkn){
             }
             else if(count == 1){
                 // checking if directory is .
-                if(strcmp(array[0], ".") == 0){
+                if(strcmp(lsArray[0], ".") == 0){
                     char send[PATH_MAX];
                     getcwd(send, sizeof(send));
                     lsNotHidden(send);
                     flag2 = 1;
                 }
                 // checking if directory is ..
-                if(strcmp(array[0], "..") == 0){
+                if(strcmp(lsArray[0], "..") == 0){
                     char dir[PATH_MAX];
                     getcwd(dir, sizeof(dir));
                     chdir("..");
@@ -836,7 +834,7 @@ void ls(char* tkn){
                     flag2 = 1;
                 }
                 // checking if directory is ~
-                if(strcmp(array[0], "~") == 0){
+                if(strcmp(lsArray[0], "~") == 0){
                     char dir[PATH_MAX];
                     getcwd(dir, sizeof(dir));
                     chdir(invokedDirectory);
@@ -847,18 +845,18 @@ void ls(char* tkn){
                     flag2 = 1;
                 }
                 // checking if file
-                if(ifFile(array[0]) == 1){
+                if(ifFile(lsArray[0]) == 1){
                     char current[PATH_MAX];
                     getcwd(current, sizeof(current));
-                    int ch = checkFileExists(current, array[0]);
+                    int ch = checkFileExists(current, lsArray[0]);
                     if(ch == 0){
-                        int per = chdir(array[0]);
+                        int per = chdir(lsArray[0]);
                         if(per == -1){
                             perror("Directory/File Error");
                         }
                     }
                     else{
-                        printf("%s\n", array[0]);
+                        printf("%s\n", lsArray[0]);
                     }
                     flag2 = 1;
                 }
@@ -867,20 +865,20 @@ void ls(char* tkn){
                 int entFlag = 0;
                 for(int i=0; i<count; i++){
                     // checking if file
-                    if(ifFile(array[i]) == 1){
+                    if(ifFile(lsArray[i]) == 1){
                         entFlag = 1;
                         char current[PATH_MAX];
                         getcwd(current, sizeof(current));
-                        int ch = checkFileExists(current, array[i]);
+                        int ch = checkFileExists(current, lsArray[i]);
                         if(ch == 0){
-                            int per = chdir(array[0]);
+                            int per = chdir(lsArray[i]);
                             if(per == -1){
                                 perror("Directory/File Error");
                                 continue;
                             }
                         }
                         else{
-                            printf("%s\n", array[i]);
+                            printf("%s\n", lsArray[i]);
                             continue;
                         }
                     }
@@ -889,7 +887,7 @@ void ls(char* tkn){
                             printf("\n");
                             entFlag = 0;
                         }
-                        printf("\033[0;37m%s:\n", array[i]);
+                        printf("\033[0;37m%s:\n", lsArray[i]);
                     }
                     char dir[PATH_MAX];
                     getcwd(dir, sizeof(dir));
@@ -920,14 +918,14 @@ void ls(char* tkn){
             }
             else if(count == 1){
                 // checking if directory is .
-                if(strcmp(array[0], ".") == 0){
+                if(strcmp(lsArray[0], ".") == 0){
                     char send[PATH_MAX];
                     getcwd(send, sizeof(send));
                     lsLHidden(send);
                     flag3 = 1;
                 }
                 // checking if directory is ..
-                if(strcmp(array[0], "..") == 0){
+                if(strcmp(lsArray[0], "..") == 0){
                     char dir[PATH_MAX];
                     getcwd(dir, sizeof(dir));
                     chdir("..");
@@ -938,7 +936,7 @@ void ls(char* tkn){
                     flag3 = 1;
                 }
                 // checking if directory is ~
-                if(strcmp(array[0], "~") == 0){
+                if(strcmp(lsArray[0], "~") == 0){
                     char dir[PATH_MAX];
                     getcwd(dir, sizeof(dir));
                     chdir(invokedDirectory);
@@ -949,12 +947,12 @@ void ls(char* tkn){
                     flag3 = 1;
                 }
                 // checking if file
-                if(ifFile(array[0]) == 1){
+                if(ifFile(lsArray[0]) == 1){
                     char current[PATH_MAX];
                     getcwd(current, sizeof(current));
-                    int ch = checkFileExists(current, array[0]);
+                    int ch = checkFileExists(current, lsArray[0]);
                     if(ch == 0){
-                        int per = chdir(array[0]);
+                        int per = chdir(lsArray[0]);
                         if(per == -1){
                             perror("Directory/File Error");
                         }
@@ -962,7 +960,7 @@ void ls(char* tkn){
                     else{
                         char current[PATH_MAX];
                         getcwd(current, sizeof(current));
-                        lsLFile(current, array[0]);
+                        lsLFile(current, lsArray[0]);
                     }
                     flag3 = 1;
                 }
@@ -971,13 +969,13 @@ void ls(char* tkn){
                 int entFlag = 0;
                 for(int i=0; i<count; i++){
                     // checking if file
-                    if(ifFile(array[i]) == 1){
+                    if(ifFile(lsArray[i]) == 1){
                         entFlag = 1;
                         char current[PATH_MAX];
                         getcwd(current, sizeof(current));
-                        int ch = checkFileExists(current, array[i]);
+                        int ch = checkFileExists(current, lsArray[i]);
                         if(ch == 0){
-                            int per = chdir(array[i]);
+                            int per = chdir(lsArray[i]);
                             if(per == -1){
                                 perror("Directory/File Error");
                                 continue;
@@ -986,7 +984,7 @@ void ls(char* tkn){
                         else{
                             char current[PATH_MAX];
                             getcwd(current, sizeof(current));
-                            lsLFile(current, array[i]);
+                            lsLFile(current, lsArray[i]);
                             continue;
                         }
                     }
@@ -995,11 +993,11 @@ void ls(char* tkn){
                             printf("\n");
                             entFlag = 0;
                         }
-                        printf("\033[0;37m%s:\n", array[i]);
+                        printf("\033[0;37m%s:\n", lsArray[i]);
                     }
                     char dir[PATH_MAX];
                     getcwd(dir, sizeof(dir));
-                    int per = chdir(array[i]);
+                    int per = chdir(lsArray[i]);
                     // error handling
                     if(per == -1){
                         perror("Directory/File Error");
@@ -1026,14 +1024,14 @@ void ls(char* tkn){
             }
             else if(count == 1){
                 // checking if directory is .
-                if(strcmp(array[0], ".") == 0){
+                if(strcmp(lsArray[0], ".") == 0){
                     char send[PATH_MAX];
                     getcwd(send, sizeof(send));
                     lsLNotHidden(send);
                     flag4 = 1;
                 }
                 // checking if directory is ..
-                if(strcmp(array[0], "..") == 0){
+                if(strcmp(lsArray[0], "..") == 0){
                     char dir[PATH_MAX];
                     getcwd(dir, sizeof(dir));
                     chdir("..");
@@ -1044,7 +1042,7 @@ void ls(char* tkn){
                     flag4 = 1;
                 }
                 // checking if directory is ~
-                if(strcmp(array[0], "~") == 0){
+                if(strcmp(lsArray[0], "~") == 0){
                     char dir[PATH_MAX];
                     getcwd(dir, sizeof(dir));
                     chdir(invokedDirectory);
@@ -1055,12 +1053,12 @@ void ls(char* tkn){
                     flag4 = 1;
                 }
                 // checking if file
-                if(ifFile(array[0]) == 1){
+                if(ifFile(lsArray[0]) == 1){
                     char current[PATH_MAX];
                     getcwd(current, sizeof(current));
-                    int ch = checkFileExists(current, array[0]);
+                    int ch = checkFileExists(current, lsArray[0]);
                     if(ch == 0){
-                        int per = chdir(array[0]);
+                        int per = chdir(lsArray[0]);
                         if(per == -1){
                             perror("Directory/File Error");
                         }
@@ -1068,7 +1066,7 @@ void ls(char* tkn){
                     else{
                         char current[PATH_MAX];
                         getcwd(current, sizeof(current));
-                        lsLFile(current, array[0]);
+                        lsLFile(current, lsArray[0]);
                     }
                     flag4 = 1;
                 }
@@ -1077,13 +1075,13 @@ void ls(char* tkn){
                 int entFlag = 0;
                 for(int i=0; i<count; i++){
                     // checking if file
-                    if(ifFile(array[i]) == 1){
+                    if(ifFile(lsArray[i]) == 1){
                         entFlag = 1;
                         char current[PATH_MAX];
                         getcwd(current, sizeof(current));
-                        int ch = checkFileExists(current, array[i]);
+                        int ch = checkFileExists(current, lsArray[i]);
                         if(ch == 0){
-                            int per = chdir(array[0]);
+                            int per = chdir(lsArray[i]);
                             if(per == -1){
                                 perror("Directory/File Error");
                                 continue;
@@ -1092,7 +1090,7 @@ void ls(char* tkn){
                         else{
                             char current[PATH_MAX];
                             getcwd(current, sizeof(current));
-                            lsLFile(current, array[i]);
+                            lsLFile(current, lsArray[i]);
                             continue;
                         }
                     }
@@ -1101,11 +1099,11 @@ void ls(char* tkn){
                             printf("\n");
                             entFlag = 0;
                         }
-                        printf("\033[0;37m%s:\n", array[i]);
+                        printf("\033[0;37m%s:\n", lsArray[i]);
                     }
                     char dir[PATH_MAX];
                     getcwd(dir, sizeof(dir));
-                    int per = chdir(array[i]);
+                    int per = chdir(lsArray[i]);
                     // error handling
                     if(per == -1){
                         perror("Directory/File Error");

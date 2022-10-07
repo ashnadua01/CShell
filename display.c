@@ -26,7 +26,6 @@ void checkDirectory(){
     if(strcmp(invokedDirectory, currDirectory) == 0){
         char *src = "~";
         strcpy(currDirectory, src);
-        strcpy(directory, invokedDirectory);
     }
     else if(strlen(currDirectory) < strlen(invokedDirectory)){
         strcpy(currDirectory, currDirectory);
@@ -40,7 +39,7 @@ void checkDirectory(){
             char mid[PATH_MAX];
             strncpy(mid, currDirectory+strlen(invokedDirectory), strlen(currDirectory) - strlen(invokedDirectory) + 1);
             char *src = "~";
-            strcat(directory, mid);
+            // strcat(directory, mid);
             strcpy(currDirectory, src);
             strcat(currDirectory, mid);
         }

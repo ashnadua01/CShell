@@ -1,6 +1,6 @@
 #ifndef _LS
 #define _LS
 
-void ls(char* tkn);
+void ls(int sendCount);
 
 #endif

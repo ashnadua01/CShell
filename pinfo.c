@@ -1,25 +1,25 @@
 #include "globalVariables.h"
 
-void pinfo(char* tkn){
-    tkn = strtok(NULL, " ");
+void pinfo(int sendCount){
+
+    // tkn = strtok(NULL, " ");
     pid_t pid;
     char send[PATH_MAX];
     char process[MAX_INPUT];
     // if pid is not mentioned, concat self 
     // in the path for current process
-    if(tkn == NULL){
+    if(sendCount == 1){
         strcpy(send, "/proc/self");
         strcat(send, "/stat");
         pid = getpid();
     }
     else{
-        strcpy(process, tkn);
-        tkn = strtok(NULL, " ");
         // error handling
-        if(tkn != NULL){
+        if(sendCount > 2){
             printf("Error: Too many arguments\n");
             return;
         }
+        strcpy(process, array[1]);
         pid = atoi(process);
         // error handling
         if(kill(pid, 0) != 0){
@@ -105,6 +105,5 @@ void pinfo(char* tkn){
         printf("process status : %s\n", status);
         printf("memory : %s {Virtual Memory}\n", memory);
         printf("executable path : %s\n", executablePath);
-
     }
 }

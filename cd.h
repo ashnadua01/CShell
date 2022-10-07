@@ -1,6 +1,6 @@
 #ifndef CD_
 #define CD_
 
-void cd(int num);
+void cd(int sendCount);
 
 #endif

@@ -3,6 +3,6 @@
 
 #include "globalVariables.h"
 
-void processHandle(int* backgroundID, int background, char* tkn);
+void processHandle(int* backgroundID, int background, int sendCount);
 
 #endif

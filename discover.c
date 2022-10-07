@@ -84,26 +84,23 @@ void recurseFile(char file[PATH_MAX], char dir[PATH_MAX]){
 }
 
 // main discover function
-void discover(char* tkn){
-    // tokenizing
-    tkn = strtok(NULL, " ");
+void discover(int sendCount){
     int count = 0;
     int flagD = 0;
     int flagF = 0;
     int checkFlag = 0;
     char directoryFlag = 0;
     char fileFlag = 0;
-    while(tkn != NULL){
-        // reading for flags
-        if(strcmp(tkn, "-d") == 0){
+    for(int i=1; i<sendCount; i++){
+        if(strcmp(array[i], "-d") == 0){
             flagD = 1;
         }
-        else if(strcmp(tkn, "-f") == 0){
+        else if(strcmp(array[i], "-f") == 0){
             flagF = 1;
         }
-        else if((strcmp(tkn, "-d") != 0) && (strcmp(tkn, "-f") != 0)){
+        else if((strcmp(array[i], "-d") != 0) && (strcmp(array[i], "-f") != 0)){
             char string[PATH_MAX];
-            strcpy(string, tkn);
+            strcpy(string, array[i]);
             // checking if input is a file
             if(string[0] == '\"'){
                 if(fileFlag == 0){
@@ -120,7 +117,7 @@ void discover(char* tkn){
             else{
                 // checcking if more than 1 directory is already present
                 if(directoryFlag == 0){
-                    strcpy(directorySend, tkn);
+                    strcpy(directorySend, array[i]);
                     count++;
                     directoryFlag = 1;
                 }
@@ -131,7 +128,6 @@ void discover(char* tkn){
                 }
             }
         }
-        tkn = strtok(NULL, " ");
     }
     // if -f or -d flag give when a file is given
     // error handles the wrong format

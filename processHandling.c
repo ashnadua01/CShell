@@ -1,27 +1,18 @@
 #include "globalVariables.h"
+int pid;
 
-void processHandle(int *backgroundID, int bgFlag, char *tkn){
-    char *tknArray[PATH_MAX];
-    int count = 0;
-    tknArray[count++] = tkn;
+void processHandle(int *backgroundID, int bgFlag, int sendCount){
 
-    // tokenizing
-    tkn = strtok(NULL, " ");
-    while (tkn != NULL){
-        tknArray[count++] = tkn;
-        tkn = strtok(NULL, " ");
-    }
-
-    int pid = fork();
+    pid = fork();
     if(pid > 0){
         // executing parent process as background process
-        // copying the name of the command executinf as a background process
+        // copying the name of the command executing as a background process
         if(bgFlag == 1){
-            printf("%s started with PID %d\n", tknArray[0], pid);
+            printf("%s started with PID %d\n", array[0], pid);
             for (int i = 0; i < 100; i++){
                 if (backgroundID[i] == 0){
                     backgroundID[i] = pid;
-                    strcpy(backCommand[i], tknArray[0]);
+                    strcpy(backCommand[i], array[0]);
                     break;
                 }
             }
@@ -31,10 +22,23 @@ void processHandle(int *backgroundID, int bgFlag, char *tkn){
         else{
             time_t t;
             t = time(NULL);
-            waitpid(pid, NULL, 0);
+            int status;
+            waitpid(pid, &status, WUNTRACED);
+            if(WIFSTOPPED(status))
+            {
+                for (int i = 0; i < 100; i++){
+                    if (backgroundID[i] == 0){
+                        printf("[%d] %s process with pid %d pushed to the background\n",i,backCommand[i],pid);
+                        backgroundID[i] = pid;
+                        strcpy(backCommand[i], array[0]);
+                        break;
+                    }
+                }
+            }
             time_t t1;
             t1 = time(NULL);
             timeTaken += (t1 - t);
+            
         }
     }
     // child process found
@@ -47,7 +51,7 @@ void processHandle(int *backgroundID, int bgFlag, char *tkn){
             }
         }
         // executing processes using execvp
-        int execCall = execvp(tknArray[0], tknArray);
+        int execCall = execvp(array[0], array);
         if(execCall == -1) {
             perror("Execvp Error");
             exit(0);

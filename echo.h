@@ -1,6 +1,6 @@
 #ifndef ECHO_
 #define ECHO_
 
-void echo(char* token);
+void echo(int sendCount);
 
 #endif

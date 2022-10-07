@@ -12,6 +12,7 @@
 #include<time.h>
 #include<sys/wait.h>
 #include<signal.h>
+#include<fcntl.h>
 
 #include "pwd.h"
 #include "echo.h"
@@ -22,6 +23,12 @@
 #include "pinfo.h"
 #include "discover.h"
 #include "processHandling.h"
+#include "pipe.h"
+#include "command.h"
+#include "jobs.h"
+#include "sig.h"
+#include "fg.h"
+#include "bg.h"
 
 extern char username[300];
 extern char hostname[300];

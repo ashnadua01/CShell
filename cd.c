@@ -2,7 +2,7 @@
 
 void cd(int num){
     int per;
-    if(num == 0){
+    if(num == 1){
         per = chdir(invokedDirectory);
         if(per == -1){
             perror("Directory Error");
@@ -18,10 +18,12 @@ void cd(int num){
             strcpy(prevDirectory, mid);
         }
     }
-    else if(num == 1){
+    else if(num == 2){
         // printf("%s\n", array[0]);
-        if(strcmp(array[0], ".") == 0){
-            per = chdir(directory);
+        if(strcmp(array[1], ".") == 0){
+            char sendDirec[PATH_MAX];
+            getcwd(sendDirec, sizeof(sendDirec));
+            per = chdir(sendDirec);
             if(per == -1){
                 perror("Directory Error");
             }
@@ -36,7 +38,7 @@ void cd(int num){
                 strcpy(prevDirectory, mid);
             }
         }
-        else if(strcmp(array[0], "~") == 0){
+        else if(strcmp(array[1], "~") == 0){
             per = chdir(invokedDirectory);
             if(per == -1){
                 perror("Directory Error");
@@ -52,7 +54,7 @@ void cd(int num){
                 strcpy(prevDirectory, mid);
             }
         }
-        else if(strcmp(array[0], "..") == 0){
+        else if(strcmp(array[1], "..") == 0){
             if(strcmp(currDirectory, "~") == 0){
                 per = chdir(invokedDirectory);
                 if(per == -1){
@@ -76,7 +78,7 @@ void cd(int num){
                 }
                 else{
                     char mid[PATH_MAX];
-                   strcpy(mid, invokedDirectory);
+                    strcpy(mid, invokedDirectory);
                     if(strcmp(currDirectory, "~") != 0){
                         char mid2[PATH_MAX];
                         strncpy(mid2, currDirectory+1, strlen(currDirectory));
@@ -86,7 +88,7 @@ void cd(int num){
                 }
             }
         }
-        else if(strcmp(array[0], "-") == 0){
+        else if(strcmp(array[1], "-") == 0){
             // printf("%s\n", prevDirectory);
             per = chdir(prevDirectory);
             if(per == -1){
@@ -105,7 +107,7 @@ void cd(int num){
             }
         }
         else{
-            per = chdir(array[0]);
+            per = chdir(array[1]);
             if(per == -1){
                 perror("Directory Error");
             }
@@ -122,8 +124,7 @@ void cd(int num){
         }
     }
     else{
-        printf("Too many arguments\n");
-        perror("Arguments");
+        perror("Too many arguments");
     }
     // printf("%s\n", prevDirectory);
 }
